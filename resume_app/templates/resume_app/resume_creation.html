@@ -57,6 +57,17 @@
             text-decoration: none;
             cursor: pointer;
         }
+
+        .skills-container, .technical-skills-container {
+            margin-top: 20px;
+        }
+
+        .skills-container .talent, .technical-skills-container .talent {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
     </style>
 </head>
 <body>
@@ -98,6 +109,7 @@
                         </div>
                     </div><!--// .yui-gf -->
 
+                    <!-- Skills Management -->
                     <div class="container">
                         <div class="yui-gf">
                             <div class="yui-u first">
@@ -107,7 +119,7 @@
                                 <button id="addSkillBtn">Add Skill</button>
                             </div>
                         </div>
-                        <div id="skillsContainer">
+                        <div id="skillsContainer" class="skills-container">
                             <!-- Skills will be added here -->
                         </div>
                     </div>
@@ -125,31 +137,36 @@
                             <button onclick="saveSkill()">Save</button>
                         </div>
                     </div>
-                    <div class="yui-gf">
-                        <div class="yui-u first">
-                            <h2>Technical</h2>
+                    <!-- Technical Management -->
+                    <div class="container">
+                        <div class="yui-gf">
+                            <div class="yui-u first">
+                                <h2>Technical Skills</h2>
+                            </div>
+                            <div class="yui-u">
+                                <button id="addTechnicalSkillBtn">Add Technical Skill</button>
+                            </div>
                         </div>
-                        <div class="yui-u">
-                            <ul class="talent">
-                                <li>XHTML</li>
-                                <li>CSS</li>
-                                <li class="last">Javascript</li>
-                            </ul>
-
-                            <ul class="talent">
-                                <li>Jquery</li>
-                                <li>PHP</li>
-                                <li class="last">CVS / Subversion</li>
-                            </ul>
-
-                            <ul class="talent">
-                                <li>OS X</li>
-                                <li>Windows XP/Vista</li>
-                                <li class="last">Linux</li>
-                            </ul>
+                        <div id="technicalSkillsContainer" class="technical-skills-container">
+                            <!-- Technical Skills will be added here -->
                         </div>
-                    </div><!--// .yui-gf-->
+                    </div>
 
+                    <!-- Modal for Adding/Editing Technical Skills -->
+                    <div id="technicalSkillModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeTechnicalSkillModal()">&times;</span>
+                            <h2>Technical Skill Details</h2>
+                            <input type="hidden" id="technicalSkillId">
+                            <label for="technicalSkillName">Skill Name:</label>
+                            <input type="text" id="technicalSkillName" required><br><br>
+                            <label for="technicalSkillDescription">Description:</label>
+                            <textarea id="technicalSkillDescription" rows="4"></textarea><br><br>
+                            <button onclick="saveTechnicalSkill()">Save</button>
+                        </div>
+                    </div>
+
+                    <!-- Modal for Adding/Editing Technical Skills -->
                     <div class="yui-gf">
 
                         <div class="yui-u first">
@@ -265,26 +282,28 @@
 
     // Function to save/update a skill
     function saveSkill() {
-        const skillId = skillIdInput.value;
+        const skillId = skillIdInput.value; // Get existing ID
         const skillName = skillNameInput.value;
         const skillDescription = skillDescriptionInput.value;
 
-        // Validation - You might add more robust validation here
         if (!skillName || !skillDescription) {
             alert("Please fill in all fields.");
             return;
         }
 
-        // Store/update skill
+        // Only add a new skill if the ID isn't already set
         if (skillId) {
-            updateSkill(skillId, skillName, skillDescription);
+            // We update existing skill
+            updateSkill(skillId, skillName, skillDescription); // Use the same ID
         } else {
+            // Adding a new skill, create a new ID
             addSkill(skillName, skillDescription);
         }
 
-        // Close the modal
+        // Close the modal after saving
         closeModal();
     }
+
 
     // Functions to manage skills data (replace with your actual storage mechanism)
     let skillsData = []; // Example - using an array in-memory
@@ -296,12 +315,16 @@
     }
 
     function updateSkill(id, name, description) {
+        // Make sure id is parsed correctly
         const skillIndex = skillsData.findIndex(skill => skill.id === parseInt(id));
         if (skillIndex !== -1) {
-            skillsData[skillIndex] = {id, name, description};
+            // Use the existing ID and just update the name and description
+            skillsData[skillIndex].name = name;
+            skillsData[skillIndex].description = description;
             renderSkills();
         }
     }
+
 
     function deleteSkill(id) {
         const skillIndex = skillsData.findIndex(skill => skill.id === parseInt(id));
@@ -339,6 +362,114 @@
 
     // Initial rendering of skills (if you have any pre-existing skills)
     renderSkills();
+</script>
+<script>
+    // Get DOM Elements for Technical Skills
+    const technicalSkillsContainer = document.getElementById('technicalSkillsContainer');
+    const addTechnicalSkillBtn = document.getElementById('addTechnicalSkillBtn');
+    const technicalSkillModal = document.getElementById('technicalSkillModal');
+    const closeTechnicalSkillModalBtn = document.querySelector('.close');
+    const technicalSkillNameInput = document.getElementById('technicalSkillName');
+    const technicalSkillDescriptionInput = document.getElementById('technicalSkillDescription');
+    const technicalSkillIdInput = document.getElementById('technicalSkillId');
+
+    // Technical Skills data array
+    let technicalSkillsData = [];
+
+    // Function to close the technical skill modal
+    function closeTechnicalSkillModal() {
+        technicalSkillModal.style.display = 'none';
+        // Clear inputs after closing
+        technicalSkillNameInput.value = '';
+        technicalSkillDescriptionInput.value = '';
+        technicalSkillIdInput.value = '';
+    }
+
+    // Function to open the technical skill modal
+    function openTechnicalSkillModal(technicalSkillId = null) {
+        if (technicalSkillId) {
+            const skill = getTechnicalSkill(technicalSkillId);
+            if (skill) {
+                technicalSkillNameInput.value = skill.name;
+                technicalSkillDescriptionInput.value = skill.description;
+                technicalSkillIdInput.value = technicalSkillId;
+            }
+        }
+        technicalSkillModal.style.display = 'block';
+    }
+
+    // Function to save/update a technical skill
+    function saveTechnicalSkill() {
+        const technicalSkillId = technicalSkillIdInput.value;
+        const technicalSkillName = technicalSkillNameInput.value;
+        const technicalSkillDescription = technicalSkillDescriptionInput.value;
+
+        if (!technicalSkillName || !technicalSkillDescription) {
+            alert("Please fill in all fields.");
+            return;
+        }
+
+        // Store/update technical skill
+        if (technicalSkillId) {
+            updateTechnicalSkill(technicalSkillId, technicalSkillName, technicalSkillDescription);
+        } else {
+            addTechnicalSkill(technicalSkillName, technicalSkillDescription);
+        }
+
+        // Close the modal
+        closeTechnicalSkillModal();
+    }
+
+    function addTechnicalSkill(name, description) {
+        const newTechnicalSkill = {id: Date.now(), name, description}; // Generate a unique ID
+        technicalSkillsData.push(newTechnicalSkill);
+        renderTechnicalSkills();
+    }
+
+    function updateTechnicalSkill(id, name, description) {
+        const skillIndex = technicalSkillsData.findIndex(skill => skill.id === parseInt(id, 10)); // Ensure you're parsing the ID as an integer
+        if (skillIndex !== -1) {
+            technicalSkillsData[skillIndex] = {id: parseInt(id, 10), name, description}; // Make sure the id is set correctly
+            renderTechnicalSkills();
+        }
+    }
+
+    function deleteTechnicalSkill(id) {
+        const skillIndex = technicalSkillsData.findIndex(skill => skill.id === parseInt(id, 10)); // Ensure you're parsing the ID as an integer
+        if (skillIndex !== -1) {
+            technicalSkillsData.splice(skillIndex, 1);
+            renderTechnicalSkills();
+        }
+    }
+
+    function getTechnicalSkill(id) {
+        return technicalSkillsData.find(skill => skill.id === parseInt(id, 10)); // Ensure you're parsing the ID properly
+    }
+
+    // Function to render the technical skills on the page
+    function renderTechnicalSkills() {
+        technicalSkillsContainer.innerHTML = ''; // Clear existing technical skills
+
+        technicalSkillsData.forEach(skill => {
+            const skillElement = document.createElement('div');
+            skillElement.classList.add('talent');
+
+            skillElement.innerHTML = `
+                <h2>${skill.name}</h2>
+                <p>${skill.description}</p>
+                <button onclick="openTechnicalSkillModal(${skill.id})">Edit</button>
+                <button onclick="deleteTechnicalSkill(${skill.id})">Delete</button>
+            `;
+            technicalSkillsContainer.appendChild(skillElement);
+        });
+    }
+
+    // Event Listeners for Technical Skills
+    addTechnicalSkillBtn.addEventListener('click', openTechnicalSkillModal);
+    closeTechnicalSkillModalBtn.addEventListener('click', closeTechnicalSkillModal);
+
+    // Initial rendering of technical skills (if you have any pre-existing technical skills)
+    renderTechnicalSkills();
 </script>
 </body>
 </html>
