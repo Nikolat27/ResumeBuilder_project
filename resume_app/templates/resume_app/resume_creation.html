@@ -85,7 +85,7 @@
 
                 <div class="yui-u">
                     <div class="contact-info">
-                        <h3><a id="pdf" href="#">Download PDF</a></h3>
+                        {#                        <h3><a id="pdf" href="#">Download PDF</a></h3>#}
                         <h3><a><input type="email" placeholder="Your email:" name="email"></a></h3>
                         <br>
                         <h3><input type="text" name="phone_number" placeholder="Your phone number:"></h3>
@@ -166,81 +166,121 @@
                         </div>
                     </div>
 
-                    <!-- Modal for Adding/Editing Technical Skills -->
-                    <div class="yui-gf">
-
-                        <div class="yui-u first">
-                            <h2>Experience</h2>
-                        </div><!--// .yui-u -->
-
-                        <div class="yui-u">
-
-                            <div class="job">
-                                <h2>Facebook</h2>
-                                <h3>Senior Interface Designer</h3>
-                                <h4>2005-2007</h4>
-                                <p>Intrinsicly enable optimal core competencies through corporate relationships.
-                                    Phosfluorescently implement worldwide vortals and client-focused imperatives.
-                                    Conveniently initiate virtual paradigms and top-line convergence. </p>
+                    <!-- Add this to your existing HTML in the appropriate place -->
+                    <!-- Experience Management -->
+                    <div class="container">
+                        <div class="yui-gf">
+                            <div class="yui-u first">
+                                <h2>Experience</h2>
                             </div>
-
-                            <div class="job">
-                                <h2>Apple Inc.</h2>
-                                <h3>Senior Interface Designer</h3>
-                                <h4>2005-2007</h4>
-                                <p>Progressively reconceptualize multifunctional "outside the box" thinking through
-                                    inexpensive methods of empowerment. Compellingly morph extensive niche markets with
-                                    mission-critical ideas. Phosfluorescently deliver bricks-and-clicks strategic theme
-                                    areas rather than scalable benefits. </p>
+                            <div class="yui-u">
+                                <button id="addExperienceBtn">Add Experience</button>
                             </div>
-
-                            <div class="job">
-                                <h2>Microsoft</h2>
-                                <h3>Principal and Creative Lead</h3>
-                                <h4>2004-2005</h4>
-                                <p>Intrinsicly transform flexible manufactured products without excellent intellectual
-                                    capital. Energistically evisculate orthogonal architectures through covalent action
-                                    items. Assertively incentivize sticky platforms without synergistic materials. </p>
-                            </div>
-
-
-                            <div class="job last">
-                                <h2>International Business Machines (IBM)</h2>
-                                <h3>Lead Web Designer</h3>
-                                <h4>2001-2004</h4>
-                                <p>Globally re-engineer cross-media schemas through viral methods of empowerment.
-                                    Proactively grow long-term high-impact human capital and highly efficient
-                                    innovation. Intrinsicly iterate excellent e-tailers with timely e-markets.</p>
-                            </div>
-
-                        </div><!--// .yui-u -->
-                    </div><!--// .yui-gf -->
-
-
-                    <div class="yui-gf last">
-                        <div class="yui-u first">
-                            <h2>Education</h2>
                         </div>
-                        <div class="yui-u">
-                            <h2>Indiana University - Bloomington, Indiana</h2>
-                            <h3>Dual Major, Economics and English &mdash; <strong>4.0 GPA</strong></h3>
+                        <div id="experienceContainer" class="experience-container">
+                            <!-- Experience entries will be added here -->
                         </div>
-                    </div><!--// .yui-gf -->
+                    </div>
 
+                    <!-- Modal for Adding/Editing Experience -->
+                    <div id="experienceModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeExperienceModal()">&times;</span>
+                            <h2>Experience Details</h2>
+                            <input type="hidden" id="experienceId">
+                            <label for="companyName">Company Name:</label>
+                            <input type="text" id="companyName" required><br><br>
+                            <label for="role">Role:</label>
+                            <input type="text" id="role" required><br><br>
+                            <label for="experienceDescription">Description:</label>
+                            <textarea id="experienceDescription" rows="4" required></textarea><br><br>
+                            <label for="dates">Date:</label>
+                            <input type="text" id="dates" required placeholder="e.g., 2005-2007"><br><br>
+                            <button onclick="saveExperience()">Save</button>
+                        </div>
+                    </div>
 
+                    <!-- Education Management -->
+                    <div class="container">
+                        <div class="yui-gf">
+                            <div class="yui-u first">
+                                <h2>Education</h2>
+                            </div>
+                            <div class="yui-u">
+                                <button id="addEducationBtn">Add Education</button>
+                            </div>
+                        </div>
+                        <div id="educationContainer" class="education-container">
+                            <!-- Education entries will be added here -->
+                        </div>
+                    </div>
+
+                    <!-- Modal for Adding/Editing Education -->
+                    <div id="educationModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeEducationModal()">&times;</span>
+                            <h2>Education Details</h2>
+                            <input type="hidden" id="educationId">
+                            <label for="universityName">University Name:</label>
+                            <input type="text" id="universityName" required><br><br>
+                            <label for="major">Major:</label>
+                            <input type="text" id="major" required><br><br>
+                            <label for="gpa">GPA:</label>
+                            <input type="text" id="gpa" required><br><br>
+                            <button onclick="saveEducation()">Save</button>
+                        </div>
+                    </div>
+                    <div align="center">
+                        <button style="font-weight: bold" class="btn btn-danger" id="submitBtn">Submit</button>
+                    </div>
                 </div><!--// .yui-b -->
             </div><!--// yui-main -->
         </div><!--// bd -->
-
-        <div id="ft">
-            <p>Jonathan Doe &mdash; <a href="mailto:name@yourdomain.com">name@yourdomain.com</a> &mdash; (313) -
-                867-5309</p>
-        </div><!--// footer -->
-
     </div><!-- // inner -->
 
 
 </div><!--// doc -->
+
+<script>
+    async function submitData() {
+        const resumeData = {
+            fullName: document.querySelector('input[name="full_name"]').value,
+            position: document.querySelector('input[name="position"]').value,
+            email: document.querySelector('input[name="email"]').value,
+            phone: document.querySelector('input[name="phone_number"]').value,
+            profile: document.querySelector('textarea[name="profile"]').value,
+            skills: skillsData,                // Assuming skillsData is defined globally
+            technicalSkills: technicalSkillsData, // Assuming technicalSkillsData is defined globally
+            experience: experienceData,        // Assuming experienceData is defined globally
+            education: educationData           // Assuming educationData is defined globally
+        };
+
+        try {
+            const response = await fetch('/resume/creation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(resumeData)
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok: ' + response.statusText);
+            }
+
+            const result = await response.json();
+            // Handle success response (e.g. notify user, reset fields)
+            console.log('Success:', result);
+        } catch (error) {
+            // Handle error response
+            console.error('Error:', error);
+        }
+    }
+
+    // You can then call this function when you want to submit the data,
+    // e.g., via a button click.
+    document.getElementById('submitBtn').addEventListener('click', submitData);
+</script>
 
 <script>
     // Get DOM Elements
@@ -324,7 +364,6 @@
             renderSkills();
         }
     }
-
 
     function deleteSkill(id) {
         const skillIndex = skillsData.findIndex(skill => skill.id === parseInt(id));
@@ -470,6 +509,235 @@
 
     // Initial rendering of technical skills (if you have any pre-existing technical skills)
     renderTechnicalSkills();
+</script>
+<script>
+    // Get DOM Elements for Experience
+    const experienceContainer = document.getElementById('experienceContainer');
+    const addExperienceBtn = document.getElementById('addExperienceBtn');
+    const experienceModal = document.getElementById('experienceModal');
+    const closeExperienceModalBtn = document.querySelector('.close');
+    const companyNameInput = document.getElementById('companyName');
+    const roleInput = document.getElementById('role');
+    const experienceDescriptionInput = document.getElementById('experienceDescription');
+    const datesInput = document.getElementById('dates');
+    const experienceIdInput = document.getElementById('experienceId');
+
+    // Experience data array
+    let experienceData = [];
+
+    // Function to close the experience modal
+    function closeExperienceModal() {
+        experienceModal.style.display = 'none';
+        // Clear inputs after closing
+        companyNameInput.value = '';
+        roleInput.value = '';
+        experienceDescriptionInput.value = '';
+        datesInput.value = '';
+        experienceIdInput.value = '';
+    }
+
+    // Function to open the experience modal
+    function openExperienceModal(experienceId = null) {
+        if (experienceId) {
+            const experience = getExperience(experienceId);
+            if (experience) {
+                companyNameInput.value = experience.company;
+                roleInput.value = experience.role;
+                experienceDescriptionInput.value = experience.description;
+                datesInput.value = experience.dates;
+                experienceIdInput.value = experienceId;
+            }
+        }
+        experienceModal.style.display = 'block';
+    }
+
+    // Function to save/update an experience
+    function saveExperience() {
+        const experienceId = experienceIdInput.value;
+        const companyName = companyNameInput.value;
+        const role = roleInput.value;
+        const experienceDescription = experienceDescriptionInput.value;
+        const dates = datesInput.value;
+
+        if (!companyName || !role || !experienceDescription || !dates) {
+            alert("Please fill in all fields.");
+            return;
+        }
+
+        if (experienceId) {
+            updateExperience(experienceId, companyName, role, experienceDescription, dates);
+        } else {
+            addExperience(companyName, role, experienceDescription, dates);
+        }
+
+        closeExperienceModal();
+    }
+
+    function addExperience(company, role, description, dates) {
+        const newExperience = {id: Date.now(), company, role, description, dates};
+        experienceData.push(newExperience);
+        renderExperience();
+    }
+
+    function updateExperience(id, company, role, description, dates) {
+        const experienceIndex = experienceData.findIndex(exp => exp.id === parseInt(id));
+        if (experienceIndex !== -1) {
+            experienceData[experienceIndex] = {id: parseInt(id), company, role, description, dates};
+            renderExperience();
+        }
+    }
+
+    function deleteExperience(id) {
+        const experienceIndex = experienceData.findIndex(exp => exp.id === parseInt(id));
+        if (experienceIndex !== -1) {
+            experienceData.splice(experienceIndex, 1);
+            renderExperience();
+        }
+    }
+
+    function getExperience(id) {
+        return experienceData.find(exp => exp.id === parseInt(id));
+    }
+
+    // Function to render the experience entries on the page
+    function renderExperience() {
+        experienceContainer.innerHTML = '';
+
+        experienceData.forEach(exp => {
+            const expElement = document.createElement('div');
+            expElement.classList.add('talent');
+
+            expElement.innerHTML = `
+            <h2>${exp.company}</h2>
+            <h3>${exp.role}</h3>
+            <h4>${exp.dates}</h4>
+            <p>${exp.description}</p>
+            <button onclick="openExperienceModal(${exp.id})">Edit</button>
+            <button onclick="deleteExperience(${exp.id})">Delete</button>
+        `;
+            experienceContainer.appendChild(expElement);
+        });
+    }
+
+    // Event Listeners for Experience
+    addExperienceBtn.addEventListener('click', openExperienceModal);
+    closeExperienceModalBtn.addEventListener('click', closeExperienceModal);
+
+    // Initial rendering of experience (if you have any pre-existing experience)
+    renderExperience();
+</script>
+
+<script>
+    // Get DOM Elements for Education
+    const educationContainer = document.getElementById('educationContainer');
+    const addEducationBtn = document.getElementById('addEducationBtn');
+    const educationModal = document.getElementById('educationModal');
+    const closeEducationModalBtn = document.querySelector('.close');
+    const universityNameInput = document.getElementById('universityName');
+    const majorInput = document.getElementById('major');
+    const gpaInput = document.getElementById('gpa');
+    const educationIdInput = document.getElementById('educationId');
+
+    // Education data array
+    let educationData = [];
+
+    // Function to close the education modal
+    function closeEducationModal() {
+        educationModal.style.display = 'none';
+        // Clear inputs after closing
+        universityNameInput.value = '';
+        majorInput.value = '';
+        gpaInput.value = '';
+        educationIdInput.value = '';
+    }
+
+    // Function to open the education modal
+    function openEducationModal(educationId = null) {
+        if (educationId) {
+            const education = getEducation(educationId);
+            if (education) {
+                universityNameInput.value = education.university;
+                majorInput.value = education.major;
+                gpaInput.value = education.gpa;
+                educationIdInput.value = educationId;
+            }
+        }
+        educationModal.style.display = 'block';
+    }
+
+    // Function to save/update an education entry
+    function saveEducation() {
+        const educationId = educationIdInput.value;
+        const universityName = universityNameInput.value;
+        const major = majorInput.value;
+        const gpa = gpaInput.value;
+
+        if (!universityName || !major || !gpa) {
+            alert("Please fill in all fields.");
+            return;
+        }
+
+        // Store/update education entry
+        if (educationId) {
+            updateEducation(educationId, universityName, major, gpa);
+        } else {
+            addEducation(universityName, major, gpa);
+        }
+
+        // Close the modal
+        closeEducationModal();
+    }
+
+    function addEducation(university, major, gpa) {
+        const newEducation = {id: Date.now(), university, major, gpa}; // Generate a unique ID
+        educationData.push(newEducation);
+        renderEducation();
+    }
+
+    function updateEducation(id, university, major, gpa) {
+        const index = educationData.findIndex(ed => ed.id === parseInt(id, 10)); // Ensure you're parsing the ID as an integer
+        if (index !== -1) {
+            educationData[index] = {id: parseInt(id, 10), university, major, gpa}; // Make sure the id is set correctly
+            renderEducation();
+        }
+    }
+
+    function deleteEducation(id) {
+        const index = educationData.findIndex(ed => ed.id === parseInt(id, 10)); // Ensure you're parsing the ID as an integer
+        if (index !== -1) {
+            educationData.splice(index, 1);
+            renderEducation();
+        }
+    }
+
+    function getEducation(id) {
+        return educationData.find(ed => ed.id === parseInt(id, 10)); // Ensure you're parsing the ID properly
+    }
+
+    // Function to render the education on the page
+    function renderEducation() {
+        educationContainer.innerHTML = ''; // Clear existing education entries
+
+        educationData.forEach(ed => {
+            const edElement = document.createElement('div');
+            edElement.classList.add('talent');
+
+            edElement.innerHTML = `
+            <h2>${ed.university}</h2>
+            <h3>${ed.major} &mdash; <strong>${ed.gpa}</strong></h3>
+            <button onclick="openEducationModal(${ed.id})">Edit</button>
+            <button onclick="deleteEducation(${ed.id})">Delete</button>
+        `;
+            educationContainer.appendChild(edElement);
+        });
+    }
+
+    // Event Listeners for Education
+    addEducationBtn.addEventListener('click', openEducationModal);
+    closeEducationModalBtn.addEventListener('click', closeEducationModal);
+
+    // Initial rendering of education (if you have any pre-existing education)
+    renderEducation();
 </script>
 </body>
 </html>
