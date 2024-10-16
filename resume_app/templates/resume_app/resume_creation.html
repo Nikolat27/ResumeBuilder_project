@@ -2,7 +2,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-    <input type="text" value="Enter the Title here">
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 
     <meta name="keywords" content=""/>
@@ -80,7 +79,7 @@
                 <div class="yui-u first">
                     <h2><input type="text" placeholder="Your name:" name="full_name"></h2>
                     <br>
-                    <h2><input type="text" placeholder="Your position example: Backend developer" name="position"></h2>
+                    <h2><input type="text" placeholder="Your position:" name="position"></h2>
                 </div>
 
                 <div class="yui-u">
@@ -104,7 +103,7 @@
                         </div>
                         <div class="yui-u">
                             <p class="enlarge">
-                                <textarea type="text" name="profile" placeholder="About you"></textarea>
+                                <textarea name="profile" placeholder="About you"></textarea>
                             </p>
                         </div>
                     </div><!--// .yui-gf -->
@@ -160,8 +159,6 @@
                             <input type="hidden" id="technicalSkillId">
                             <label for="technicalSkillName">Skill Name:</label>
                             <input type="text" id="technicalSkillName" required><br><br>
-                            <label for="technicalSkillDescription">Description:</label>
-                            <textarea id="technicalSkillDescription" rows="4"></textarea><br><br>
                             <button onclick="saveTechnicalSkill()">Save</button>
                         </div>
                     </div>
@@ -251,8 +248,8 @@
             profile: document.querySelector('textarea[name="profile"]').value,
             skills: skillsData,                // Assuming skillsData is defined globally
             technicalSkills: technicalSkillsData, // Assuming technicalSkillsData is defined globally
-            experience: experienceData,        // Assuming experienceData is defined globally
-            education: educationData           // Assuming educationData is defined globally
+            experiences: experienceData,        // Assuming experienceData is defined globally
+            educations: educationData           // Assuming educationData is defined globally
         };
 
         try {
@@ -409,7 +406,6 @@
     const technicalSkillModal = document.getElementById('technicalSkillModal');
     const closeTechnicalSkillModalBtn = document.querySelector('.close');
     const technicalSkillNameInput = document.getElementById('technicalSkillName');
-    const technicalSkillDescriptionInput = document.getElementById('technicalSkillDescription');
     const technicalSkillIdInput = document.getElementById('technicalSkillId');
 
     // Technical Skills data array
@@ -420,7 +416,6 @@
         technicalSkillModal.style.display = 'none';
         // Clear inputs after closing
         technicalSkillNameInput.value = '';
-        technicalSkillDescriptionInput.value = '';
         technicalSkillIdInput.value = '';
     }
 
@@ -430,7 +425,6 @@
             const skill = getTechnicalSkill(technicalSkillId);
             if (skill) {
                 technicalSkillNameInput.value = skill.name;
-                technicalSkillDescriptionInput.value = skill.description;
                 technicalSkillIdInput.value = technicalSkillId;
             }
         }
@@ -441,18 +435,16 @@
     function saveTechnicalSkill() {
         const technicalSkillId = technicalSkillIdInput.value;
         const technicalSkillName = technicalSkillNameInput.value;
-        const technicalSkillDescription = technicalSkillDescriptionInput.value;
-
-        if (!technicalSkillName || !technicalSkillDescription) {
+        if (!technicalSkillName) {
             alert("Please fill in all fields.");
             return;
         }
 
         // Store/update technical skill
         if (technicalSkillId) {
-            updateTechnicalSkill(technicalSkillId, technicalSkillName, technicalSkillDescription);
+            updateTechnicalSkill(technicalSkillId, technicalSkillName);
         } else {
-            addTechnicalSkill(technicalSkillName, technicalSkillDescription);
+            addTechnicalSkill(technicalSkillName);
         }
 
         // Close the modal
@@ -495,7 +487,6 @@
 
             skillElement.innerHTML = `
                 <h2>${skill.name}</h2>
-                <p>${skill.description}</p>
                 <button onclick="openTechnicalSkillModal(${skill.id})">Edit</button>
                 <button onclick="deleteTechnicalSkill(${skill.id})">Delete</button>
             `;
@@ -541,7 +532,7 @@
         if (experienceId) {
             const experience = getExperience(experienceId);
             if (experience) {
-                companyNameInput.value = experience.company;
+                companyNameInput.value = experience.company_name;
                 roleInput.value = experience.role;
                 experienceDescriptionInput.value = experience.description;
                 datesInput.value = experience.dates;
@@ -554,27 +545,27 @@
     // Function to save/update an experience
     function saveExperience() {
         const experienceId = experienceIdInput.value;
-        const companyName = companyNameInput.value;
+        const company_name = companyNameInput.value;
         const role = roleInput.value;
-        const experienceDescription = experienceDescriptionInput.value;
+        const description = experienceDescriptionInput.value;
         const dates = datesInput.value;
 
-        if (!companyName || !role || !experienceDescription || !dates) {
+        if (!company_name || !role || !description || !dates) {
             alert("Please fill in all fields.");
             return;
         }
 
         if (experienceId) {
-            updateExperience(experienceId, companyName, role, experienceDescription, dates);
+            updateExperience(experienceId, company_name, role, description, dates);
         } else {
-            addExperience(companyName, role, experienceDescription, dates);
+            addExperience(company_name, role, description, dates);
         }
 
         closeExperienceModal();
     }
 
-    function addExperience(company, role, description, dates) {
-        const newExperience = {id: Date.now(), company, role, description, dates};
+    function addExperience(company_name, role, description, dates) {
+        const newExperience = {id: Date.now(), company_name, role, description, dates};
         experienceData.push(newExperience);
         renderExperience();
     }
@@ -656,7 +647,7 @@
         if (educationId) {
             const education = getEducation(educationId);
             if (education) {
-                universityNameInput.value = education.university;
+                universityNameInput.value = education.university_name;
                 majorInput.value = education.major;
                 gpaInput.value = education.gpa;
                 educationIdInput.value = educationId;
@@ -668,36 +659,36 @@
     // Function to save/update an education entry
     function saveEducation() {
         const educationId = educationIdInput.value;
-        const universityName = universityNameInput.value;
+        const university_name = universityNameInput.value;
         const major = majorInput.value;
         const gpa = gpaInput.value;
 
-        if (!universityName || !major || !gpa) {
+        if (!university_name || !major || !gpa) {
             alert("Please fill in all fields.");
             return;
         }
 
         // Store/update education entry
         if (educationId) {
-            updateEducation(educationId, universityName, major, gpa);
+            updateEducation(educationId, university_name, major, gpa);
         } else {
-            addEducation(universityName, major, gpa);
+            addEducation(university_name, major, gpa);
         }
 
         // Close the modal
         closeEducationModal();
     }
 
-    function addEducation(university, major, gpa) {
-        const newEducation = {id: Date.now(), university, major, gpa}; // Generate a unique ID
+    function addEducation(university_name, major, gpa) {
+        const newEducation = {id: Date.now(), university_name, major, gpa}; // Generate a unique ID
         educationData.push(newEducation);
         renderEducation();
     }
 
-    function updateEducation(id, university, major, gpa) {
+    function updateEducation(id, university_name, major, gpa) {
         const index = educationData.findIndex(ed => ed.id === parseInt(id, 10)); // Ensure you're parsing the ID as an integer
         if (index !== -1) {
-            educationData[index] = {id: parseInt(id, 10), university, major, gpa}; // Make sure the id is set correctly
+            educationData[index] = {id: parseInt(id, 10), university_name, major, gpa}; // Make sure the id is set correctly
             renderEducation();
         }
     }

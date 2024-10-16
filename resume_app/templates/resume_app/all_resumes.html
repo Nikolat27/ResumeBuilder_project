@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Resumes</title>
+</head>
+<body>
+<div align="center">
+    {% for resume in resumes %}
+        <h2><a href="{% url "resume_app:retrieve_resume" resume.id %}"><span
+                style="font-weight: bold; color: #990003">{{ forloop.counter }} Resume</span></a></h2>
+        <br><br>
+    {% endfor %}
+</div>
+</body>
+</html>
