@@ -3,6 +3,7 @@
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+
     <meta name="keywords" content=""/>
     <meta name="description" content=""/>
 
@@ -12,19 +13,15 @@
 
     <style>
         /* Basic Styling - You can customize this further */
-        body {
-            font-family: Arial, sans-serif;
-        }
 
         .yui-gf {
             display: flex;
-            align-items: flex-start; /* Use flex-start to keep elements aligned */
+            align-items: center;
             margin-bottom: 20px;
         }
 
         .yui-u {
             padding: 10px;
-            flex: 1; /* Allow columns to take space evenly */
         }
 
         .modal {
@@ -60,13 +57,11 @@
             cursor: pointer;
         }
 
-        .skills-container, .technical-skills-container, .experience-container, .education-container {
+        .skills-container, .technical-skills-container {
             margin-top: 20px;
-            display: flex;
-            flex-direction: column; /* Stack items vertically */
         }
 
-        .talent {
+        .skills-container .talent, .technical-skills-container .talent {
             border: 1px solid #ccc;
             padding: 10px;
             margin-bottom: 10px;
@@ -82,16 +77,19 @@
         <div id="hd">
             <div class="yui-gc">
                 <div class="yui-u first">
-                    <h2><input type="text" placeholder="Your name:" name="full_name"></h2>
+                    <h2><input type="text" placeholder="Your name:" name="full_name" value="{{ resume.full_name }}">
+                    </h2>
                     <br>
-                    <h2><input type="text" placeholder="Your position:" name="position"></h2>
+                    <h2><input type="text" placeholder="Your position:" name="position" value="{{ resume.position }}">
+                    </h2>
                 </div>
 
                 <div class="yui-u">
                     <div class="contact-info">
-                        <h3><input type="email" placeholder="Your email:" name="email"></h3>
+                        <h3><input type="email" placeholder="Your email:" name="email" value="{{ resume.email }}"></h3>
                         <br>
-                        <h3><input type="text" name="phone_number" placeholder="Your phone number:"></h3>
+                        <h3><input type="text" name="phone_number" placeholder="Your phone number:"
+                                   value="{{ resume.phone_number }}"></h3>
                     </div><!--// .contact-info -->
                 </div>
             </div><!--// .yui-gc -->
@@ -107,7 +105,9 @@
                         </div>
                         <div class="yui-u">
                             <p class="enlarge">
-                                <textarea name="profile" placeholder="About you"></textarea>
+                            <p class="enlarge">
+                                <textarea name="profile" placeholder="About you">{{ resume.profile }}</textarea>
+                            </p>
                             </p>
                         </div>
                     </div><!--// .yui-gf -->
@@ -122,8 +122,17 @@
                                 <button id="addSkillBtn">Add Skill</button>
                             </div>
                         </div>
-                        <div id="skillsContainer" class="skills-container">
-                            <!-- Skills will be added here -->
+                        <div class="skills-container" id="skillsContainer">
+                            <h2>Skills</h2>
+                            <button id="addSkillBtn">Add Skill</button>
+                            {% for skill in skills %}
+                                <div class="talent">
+                                    <h2>{{ skill.name }}</h2>
+                                    <p>{{ skill.description }}</p>
+                                    <button onclick="openModal({{ skill.id }})">Edit</button>
+                                    <button onclick="deleteSkill({{ skill.id }})">Delete</button>
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -140,8 +149,7 @@
                             <button onclick="saveSkill()">Save</button>
                         </div>
                     </div>
-
-                    <!-- Technical Skills Management -->
+                    <!-- Technical Management -->
                     <div class="container">
                         <div class="yui-gf">
                             <div class="yui-u first">
@@ -151,8 +159,16 @@
                                 <button id="addTechnicalSkillBtn">Add Technical Skill</button>
                             </div>
                         </div>
-                        <div id="technicalSkillsContainer" class="technical-skills-container">
-                            <!-- Technical Skills will be added here -->
+                        <div class="technical-skills-container" id="technicalSkillsContainer">
+                            <h2>Technical Skills</h2>
+                            <button id="addTechnicalSkillBtn">Add Technical Skill</button>
+                            {% for technical_skill in technical_skills %}
+                                <div class="talent">
+                                    <h2>{{ technical_skill.name }}</h2>
+                                    <button onclick="openTechnicalSkillModal({{ technical_skill.id }})">Edit</button>
+                                    <button onclick="deleteTechnicalSkill({{ technical_skill.id }})">Delete</button>
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -168,6 +184,7 @@
                         </div>
                     </div>
 
+                    <!-- Add this to your existing HTML in the appropriate place -->
                     <!-- Experience Management -->
                     <div class="container">
                         <div class="yui-gf">
@@ -178,8 +195,21 @@
                                 <button id="addExperienceBtn">Add Experience</button>
                             </div>
                         </div>
-                        <div id="experienceContainer" class="experience-container">
-                            <!-- Experience entries will be added here -->
+                        <div class="experience-container" id="experienceContainer">
+                            <h2>Experience</h2>
+                            <button id="addExperienceBtn">Add Experience</button>
+                            {% for experience in experiences %}
+                                <div class="talent">
+                                    <h2>{{ experience.company_name }}</h2>
+                                    <h3>{{ experience.role }}</h3>
+                                    <h4>{{ experience.dates }}</h4>
+                                    <p>{{ experience.description }}</p>
+                                    <button onclick="openExperienceModal({{ experience.id }})">Edit</button>
+                                    <button onclick="deleteExperience({{ experience.id }})">Delete</button>
+                                </div>
+                            {% empty %}
+                                Experiences are empty!
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -211,8 +241,17 @@
                                 <button id="addEducationBtn">Add Education</button>
                             </div>
                         </div>
-                        <div id="educationContainer" class="education-container">
-                            <!-- Education entries will be added here -->
+                        <div class="education-container" id="educationContainer">
+                            <h2>Education</h2>
+                            <button id="addEducationBtn">Add Education</button>
+                            {% for education in educations %}
+                                <div class="talent">
+                                    <h2>{{ education.university_name }}</h2>
+                                    <h3>{{ education.major }} &mdash; <strong>{{ education.gpa }}</strong></h3>
+                                    <button onclick="openEducationModal({{ education.id }})">Edit</button>
+                                    <button onclick="deleteEducation({{ education.id }})">Delete</button>
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -231,7 +270,6 @@
                             <button onclick="saveEducation()">Save</button>
                         </div>
                     </div>
-
                     <div align="center">
                         <button style="font-weight: bold" class="btn btn-danger" id="submitBtn">Submit</button>
                     </div>
@@ -239,33 +277,27 @@
             </div><!--// yui-main -->
         </div><!--// bd -->
     </div><!-- // inner -->
+    <input type="hidden" value="{{ resume.id }}">
+
 </div><!--// doc -->
 
 <script>
-    // Your JavaScript code for handling opening/closing modals, adding skills, experiences, technical skills, and education remains the same
-    // However, make sure you are ensuring elements are consistently styled when added
-    // Implement your JavaScript for modal controls and storage logic here
-</script>
-
-</body>
-</html>
-
-<script>
     async function submitData() {
+        let resume_id = document.querySelector('input[type="hidden"][value="{{ resume.id }}"]').value;
         const resumeData = {
             fullName: document.querySelector('input[name="full_name"]').value,
             position: document.querySelector('input[name="position"]').value,
             email: document.querySelector('input[name="email"]').value,
             phone: document.querySelector('input[name="phone_number"]').value,
             profile: document.querySelector('textarea[name="profile"]').value,
-            skills: skillsData,                // Assuming skillsData is defined globally
-            technicalSkills: technicalSkillsData, // Assuming technicalSkillsData is defined globally
-            experiences: experienceData,        // Assuming experienceData is defined globally
-            educations: educationData           // Assuming educationData is defined globally
+            skills: skillsData,                // Assuming skillsData is managed globally
+            technicalSkills: technicalSkillsData, // Assuming technicalSkillsData is managed globally
+            experiences: experienceData,        // Assuming experienceData is managed globally
+            educations: educationData           // Assuming educationData is managed globally
         };
 
         try {
-            const response = await fetch('/resume/creation', {
+            const response = await fetch(`/resume/update/${resume_id}/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -277,8 +309,9 @@
                 throw new Error('Network response was not ok: ' + response.statusText);
             }
 
-            {#const result = await response.json();#}
-            window.location.replace("/resume/all");
+            const result = await response.json();
+            // Handle success response (e.g. notify user, reset fields)
+            console.log('Success:', result);
         } catch (error) {
             // Handle error response
             console.error('Error:', error);
@@ -309,6 +342,7 @@
     }
 
     // Function to open the modal
+    // Function to open the modal
     function openModal(skillId = null) {
         if (skillId) {
             // **Call getSkill AFTER skillsData is populated**
@@ -327,6 +361,7 @@
         skillModal.style.display = 'block';
     }
 
+    // Function to save/update a skill
     // Function to save/update a skill
     function saveSkill() {
         const skillId = skillIdInput.value; // Get existing ID
@@ -386,7 +421,8 @@
 
     // Function to render the skills on the page
     function renderSkills() {
-        skillsContainer.innerHTML = ''; // Clear existing skills
+        const skillsContainer = document.querySelector('.skills-container');
+        {#skillsContainer.innerHTML = ''; // Clear existing skills#}
 
         skillsData.forEach(skill => {
             const skillElement = document.createElement('div');
@@ -489,7 +525,8 @@
 
     // Function to render the technical skills on the page
     function renderTechnicalSkills() {
-        technicalSkillsContainer.innerHTML = ''; // Clear existing technical skills
+        const technicalSkillsContainer = document.querySelector('.technical-skills-container');
+        {#technicalSkillsContainer.innerHTML = ''; // Clear existing technical skills#}
 
         technicalSkillsData.forEach(skill => {
             const skillElement = document.createElement('div');
@@ -602,7 +639,8 @@
 
     // Function to render the experience entries on the page
     function renderExperience() {
-        experienceContainer.innerHTML = '';
+        const experienceContainer = document.querySelector('.experience-container');
+        {#experienceContainer.innerHTML = '';#}
 
         experienceData.forEach(exp => {
             const expElement = document.createElement('div');
@@ -716,7 +754,8 @@
 
     // Function to render the education on the page
     function renderEducation() {
-        educationContainer.innerHTML = ''; // Clear existing education entries
+        const educationContainer = document.querySelector('.education-container');
+        {#educationContainer.innerHTML = ''; // Clear existing education entries#}
 
         educationData.forEach(ed => {
             const edElement = document.createElement('div');

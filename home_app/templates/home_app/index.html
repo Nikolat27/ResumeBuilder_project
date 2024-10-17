@@ -1,8 +1,12 @@
 {% load static %}
 <div align="center">
-    <h1><span style="color: blueviolet; font-weight: bolder; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">Welcome to our Resume builder website!</span></h1>
+    <h1><span
+            style="color: blueviolet; font-weight: bolder; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">Welcome to our Resume builder website!</span>
+    </h1>
     <br><br>
     <img src="{% static "images/resume1.png" %}" alt="" width="300" height="300">
     <br><br><br>
-    <button h>Build your resume</button>
+    <h2><a href="{% url "resume_app:resume_creation" %}">Build your resume</a></h2>
+    <br><br>
+    <h2><a href="{% url "resume_app:all_resumes" %}">All resumes</a></h2>
 </div>

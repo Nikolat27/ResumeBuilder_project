@@ -27,7 +27,9 @@
 
                 <div class="yui-u">
                     <div class="contact-info">
-                        <h3><a id="pdf" href="#">Download PDF</a></h3>
+                        <h3>
+                            <a id="pdf" href="{% url "resume_app:pdf_download" resume.id %}">Download PDF</a>
+                        </h3>
                         <h3><a href="{{ resume.email }}">{{ resume.email }}</a></h3>
                         <h3>{{ resume.phone_number }}</h3>
                     </div><!--// .contact-info -->
@@ -111,7 +113,6 @@
                         </div><!--// .yui-u -->
                     </div><!--// .yui-gf -->
 
-
                     <div class="yui-gf last">
                         <div class="yui-u first">
                             <h2>Education</h2>
@@ -144,4 +145,15 @@
 
 </body>
 </html>
+
+
+{#<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>#}
+{#<script>#}
+{#    document.getElementById('pdf').addEventListener('click', function () {#}
+{#        const element = document.getElementById('content');#}
+{#        html2pdf()#}
+{#            .from(element)#}
+{#            .save('output.pdf');#}
+{#    });#}
+{#</script>#}
 

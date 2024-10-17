@@ -9,7 +9,11 @@
     {% for resume in resumes %}
         <h2><a href="{% url "resume_app:retrieve_resume" resume.id %}"><span
                 style="font-weight: bold; color: #990003">{{ forloop.counter }} Resume</span></a></h2>
+        <a href="{% url "resume_app:resume_delete" resume.id %}" style="color: red; font-weight: bold;">Delete</a>
+        <hr>
         <br><br>
+    {% empty %}
+        <h2>No Resume available, <a href="{% url "resume_app:resume_creation" %}">Create one</a></h2>
     {% endfor %}
 </div>
 </body>

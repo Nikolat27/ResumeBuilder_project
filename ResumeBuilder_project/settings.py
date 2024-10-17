@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "home_app.apps.HomeAppConfig",
-    "resume_app.apps.ResumeAppConfig"
+    "resume_app.apps.ResumeAppConfig",
 ]
 
 MIDDLEWARE = [
